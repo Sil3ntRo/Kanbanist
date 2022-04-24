@@ -3,6 +3,7 @@ package com.rohansideproject.domain;
 import java.util.Date;
 import javax.persistence.*;
 
+
 @Entity
 public class Task {
 	@Id
@@ -21,8 +22,6 @@ public class Task {
 	public Task() {
 		
 	}
-	
-	
 	
 	public Long getId() {
 		return id;
