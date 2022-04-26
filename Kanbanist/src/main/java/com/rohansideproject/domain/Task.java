@@ -2,6 +2,10 @@ package com.rohansideproject.domain;
 
 import java.util.Date;
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 
 @Entity
@@ -9,13 +13,20 @@ public class Task {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@NotBlank(message = "Task name is required!")
 	private String taskName;
+	@NotBlank(message = "Task identifier is required!")
+	@Size(min = 4, max = 5, message = "Please use 4 to 5 characters")
 	private String taskIdentifier;
+	@NotBlank(message = "Task description is required!")
 	private String description;
+	@JsonFormat(pattern = "yyyy-mm-dd")
 	private Date start_date;
+	@JsonFormat(pattern = "yyyy-mm-dd")
 	private Date end_date;
-	
+	@JsonFormat(pattern = "yyyy-mm-dd")
 	private Date created_At;
+	@JsonFormat(pattern = "yyyy-mm-dd")
 	private Date updated_At;
 	
 	
