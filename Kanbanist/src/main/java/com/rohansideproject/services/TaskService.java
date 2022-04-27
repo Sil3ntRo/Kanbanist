@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.rohansideproject.domain.Task;
+import com.rohansideproject.exceptions.TaskIdException;
 import com.rohansideproject.repositories.TaskRepository;
 
 @Service
@@ -14,8 +15,12 @@ public class TaskService {
 		
 		public Task saveOrUpdateTask(Task task) {
 			
-			// Add code
+			try {
+				task.setTaskIdentifier(task.getTaskIdentifier().toUpperCase());
+				return taskRepository.save(task);
+			} catch (Exception e) {
+				throw new TaskIdException("Task ID '" + task.getTaskIdentifier().toUpperCase() + "' already exists");
+			}
 			
-			return taskRepository.save(task);
 		}
 }

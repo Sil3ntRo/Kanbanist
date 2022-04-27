@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rohansideproject.domain.Task;
+import com.rohansideproject.services.MapValidationErrorService;
 import com.rohansideproject.services.TaskService;
 
 @RestController
@@ -26,18 +27,14 @@ public class TaskController {
 	@Autowired
 	private TaskService taskService;
 	
+	@Autowired
+	private MapValidationErrorService mapValidationErrorService;
+	
 	@PostMapping("")
 	public ResponseEntity<?> createNewTask(@Valid @RequestBody Task task, BindingResult result) {
 		
-		if(result.hasErrors()) {
-			Map<String, String> errorMap = new HashMap<>();
-			
-			for(FieldError error : result.getFieldErrors()) {
-				errorMap.put(error.getField(), error.getDefaultMessage());
-			}
-			
-			return new ResponseEntity<Map<String, String>>(errorMap, HttpStatus.BAD_REQUEST);
-		}
+		ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
+		if(errorMap != null) return errorMap;
 		
 		Task task1 = taskService.saveOrUpdateTask(task);
 		return new ResponseEntity<Task>(task1, HttpStatus.CREATED);
