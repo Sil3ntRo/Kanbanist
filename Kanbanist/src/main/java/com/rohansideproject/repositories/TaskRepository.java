@@ -8,6 +8,8 @@ import com.rohansideproject.domain.Task;
 @Repository
 public interface TaskRepository extends CrudRepository<Task, Long> {
 	
+	Task findByTaskIdentifier(String taskId);
+	
 	@Override
-	Iterable<Task> findAllById(Iterable<Long> iterable);
+	Iterable<Task> findAll();
 }

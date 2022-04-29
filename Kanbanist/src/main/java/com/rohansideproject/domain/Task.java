@@ -17,6 +17,7 @@ public class Task {
 	private String taskName;
 	@NotBlank(message = "Task identifier is required!")
 	@Size(min = 4, max = 5, message = "Please use 4 to 5 characters")
+	@Column(updatable = false, unique = true)
 	private String taskIdentifier;
 	@NotBlank(message = "Task description is required!")
 	private String description;
