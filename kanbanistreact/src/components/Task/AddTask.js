@@ -1,4 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import PropTypes from "prop-types";
+import {connect} from "react-redux";
+import {createTask} from "../../actions/taskActions";
 
 class AddTask extends Component {
   constructor() {
@@ -9,11 +12,19 @@ class AddTask extends Component {
       taskIdentifier: "",
       description: "",
       start_date: "",
-      end_date: ""
+      end_date: "",
+      errors:{}
     };
 
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  // Life cycle hooks
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.errors) {
+      this.setState({ errors: nextProps.errors});
+    }
   }
   
   onChange(e) {
@@ -30,15 +41,16 @@ class AddTask extends Component {
       end_date: this.state.end_date
     };
 
-    console.log(newTask);
-  }
+    this.props.createTask(newTask, this.props.history)
+
+}
 
   render() {
+    const {errors} = this.state;
+
     return (
       <div>
-          <h1>Add Task Form</h1>
-
-          <div className="register">
+        <div className="register">
         <div className="container">
             <div className="row">
                 <div className="col-md-8 m-auto">
@@ -54,6 +66,8 @@ class AddTask extends Component {
                               value={this.state.taskName}
                               onChange={this.onChange}  
                               />
+                        <p>{errors.taskName}</p>
+
                         </div>
                         <div className="form-group">
                             <input 
@@ -65,6 +79,8 @@ class AddTask extends Component {
                               onChange={this.onChange}  
 
                                  />
+                              <p>{errors.taskIdentifier}</p>
+
                         </div>
                         <div className="form-group">
                             <textarea 
@@ -75,6 +91,9 @@ class AddTask extends Component {
                               onChange={this.onChange}  
  
                               />
+                            <p>{errors.description}</p>
+
+
                         </div>
                         <h6>Start Date</h6>
                         <div className="form-group">
@@ -111,4 +130,16 @@ class AddTask extends Component {
   }
 }
 
-export default AddTask;
+AddTask.propTypes = {
+  createTask: PropTypes.func.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state =>({
+  errors: state.errors
+});
+
+export default connect(
+  mapStateToProps,
+  {createTask}
+  ) (AddTask);
