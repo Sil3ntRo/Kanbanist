@@ -6,35 +6,31 @@ import {getTasks} from "../actions/taskActions";
 import PropTypes from "prop-types";
 
 class Dashboard extends Component {
-  
-  componentDidMount(){
+  componentDidMount() {
     this.props.getTasks();
   }
-  
-  render() {
 
-    const {tasks} = this.props.task
+  render() {
+    const { tasks } = this.props.task;
 
     return (
-
-        <div className="tasks">
+      <div className="projects">
         <div className="container">
-            <div className="row">
-                <div className="col-md-12">
-                    <h1 className="display-4 text-center">Tasks</h1>
-                    <br />
-                    <CreateTaskButton />
-                    <br />
-                    <hr />
-                    {tasks.map(task => (
-                      <TaskItem key={task.id} task={task} />
+          <div className="row">
+            <div className="col-md-12">
+              <h1 className="display-4 text-center">Tasks</h1>
+              <br />
+              <CreateTaskButton />
 
-                    ))}
-                </div>
+              <br />
+              <hr />
+              {tasks.map(task => (
+                <TaskItem key={task.id} project={task} />
+              ))}
             </div>
+          </div>
         </div>
-    </div>
-
+      </div>
     );
   }
 }
@@ -45,8 +41,10 @@ Dashboard.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  task:state.task,
+  task: state.task
+});
 
-})
-
-export default connect(mapStateToProps, {getTasks})(Dashboard);
+export default connect(
+  mapStateToProps,
+  { getTasks }
+)(Dashboard);

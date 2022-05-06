@@ -7,6 +7,7 @@ import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import AddTask from "./components/Task/AddTask";
 import {Provider} from "react-redux";
 import store from "./store";
+import UpdateTask from "./components/Task/UpdateTask";
 
 class App extends Component {
   render() {
@@ -18,6 +19,7 @@ class App extends Component {
             <Routes>
               <Route exact path="/dashboard" element={<Dashboard />}/>
               <Route exact path="/addTask" element={<AddTask />}/>
+              <Route exact path="/updateTask/:id" element={<UpdateTask />}/>
             </Routes>
           </div>
         </Router>
