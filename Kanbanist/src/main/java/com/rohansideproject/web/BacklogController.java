@@ -1,5 +1,7 @@
 package com.rohansideproject.web;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +36,10 @@ public class BacklogController {
 		ProductBacklogTask productBacklogTask1 = productBacklogTaskService.addProductTask(backlog_id, productBacklogTask);
 		
 		return new ResponseEntity<ProductBacklogTask>(productBacklogTask1, HttpStatus.CREATED);
+	}
+	
+	@GetMapping("/{backlog_id")
+	public Iterable<ProductBacklogTask> getTaskBacklog(@PathVariable String backlog_id) {
+		return productBacklogTaskService.findBacklogById(backlog_id);
 	}
 }
