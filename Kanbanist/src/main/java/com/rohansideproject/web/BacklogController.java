@@ -42,4 +42,21 @@ public class BacklogController {
 	public Iterable<ProductBacklogTask> getTaskBacklog(@PathVariable String backlog_id) {
 		return productBacklogTaskService.findBacklogById(backlog_id);
 	}
+	
+	@GetMapping("/{backlog_id}/{pt_id}")
+	public ResponseEntity<?> getProductBacklogTask(@PathVariable String backlog_id, @PathVariable String pt_id) {
+		ProductBacklogTask productBacklogTask = productBacklogTaskService.findPTByProductSequence(backlog_id, pt_id);
+		return new ResponseEntity<ProductBacklogTask>(productBacklogTask, HttpStatus.OK);
+	}
+	
+	@PatchMapping("/{backlog_id}/{pt_id}")
+	public ResponseEntity<?> updateProductTask(@Valid @RequestBody ProductBacklogTask productBacklogTask, BindingResult result,
+												@PathVariable String backlog_id, @PathVariable String pt_id) {
+		ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
+		if(errorMap != null) return errorMap;
+		
+		ProductBacklogTask updatedTask = productBacklogTaskService.updateByProductSequence(productBacklogTask, backlog_id, pt_id);
+		
+		return new ResponseEntity<ProductBacklogTask>(updatedTask, HttpStatus.OK);
+	}
 }

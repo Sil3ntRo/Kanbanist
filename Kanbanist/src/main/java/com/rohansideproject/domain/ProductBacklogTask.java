@@ -13,7 +13,7 @@ public class ProductBacklogTask {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(updatable = false)
+	@Column(updatable = false, unique = true)
 	private String productSequence;
 	@NotBlank(message = "Please include a task summary")
 	private String summary;

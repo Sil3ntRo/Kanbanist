@@ -73,4 +73,38 @@ public class ProductBacklogTaskService {
 		
 		return productBacklogTaskRepository.findByTaskIdentifierOrderByPriority(id);
 	}
+	
+	public ProductBacklogTask findPTByProductSequence(String backlog_id, String pt_id) {
+		
+		// Make sure task that is being searched is on existing backlog
+		Backlog backlog = backlogRepository.findByTaskIdentifier(pt_id);
+		
+		if(backlog == null) {
+			throw new TaskNotFoundException("Task with ID: '" + backlog_id + "' does not exist");
+		}
+		
+		
+		// Make sure task already exists in the backlog
+		ProductBacklogTask productBacklogTask = productBacklogTaskRepository.findByTaskSequence(pt_id);
+		
+		if(productBacklogTask == null) {
+			throw new TaskNotFoundException("Product Task '" + pt_id + "' not found");
+		}
+		
+		
+		// Ensure backlog/product id in the path corresponds to right task
+		if(!productBacklogTask.getTaskIdentifier().equals(backlog_id)) {
+			throw new TaskNotFoundException("Prouct Task '" + pt_id + "' does not exist in task: '" + backlog_id);
+		}
+		
+		return productBacklogTask;
+	}
+	
+	public ProductBacklogTask updateByProductSequence(ProductBacklogTask updatedTask, String backlog_id, String pt_id) {
+		ProductBacklogTask productBacklogTask = productBacklogTaskRepository.findByTaskSequence(pt_id);
+		
+		productBacklogTask = updatedTask;
+		
+		return productBacklogTaskRepository.save(productBacklogTask);
+	}
 }

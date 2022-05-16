@@ -11,4 +11,6 @@ import com.rohansideproject.domain.ProductBacklogTask;
 public interface ProductBacklogTaskRepository extends CrudRepository<ProductBacklogTask, Long> {
 	
 	List<ProductBacklogTask> findByTaskIdentifierOrderByPriority(String id);
+	
+	ProductBacklogTask findByTaskSequence(String sequence);
 }
