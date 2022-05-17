@@ -101,10 +101,21 @@ public class ProductBacklogTaskService {
 	}
 	
 	public ProductBacklogTask updateByProductSequence(ProductBacklogTask updatedTask, String backlog_id, String pt_id) {
-		ProductBacklogTask productBacklogTask = productBacklogTaskRepository.findByTaskSequence(pt_id);
+		ProductBacklogTask productBacklogTask = findPTByProductSequence(backlog_id, pt_id);
 		
 		productBacklogTask = updatedTask;
 		
 		return productBacklogTaskRepository.save(productBacklogTask);
+	}
+	
+	public void deletePTByProductSequence(String backlog_id, String pt_id) {
+		ProductBacklogTask productBacklogTask = findPTByProductSequence(backlog_id, pt_id);
+		
+		Backlog backlog = productBacklogTask.getBacklog();
+		List<ProductBacklogTask> pts = backlog.getProductBacklogTasks();
+		pts.remove(productBacklogTask);
+		backlogRepository.save(backlog);
+		
+		productBacklogTaskRepository.delete(productBacklogTask);
 	}
 }
