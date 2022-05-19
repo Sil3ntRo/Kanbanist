@@ -6,5 +6,5 @@ export const DELETE_TASK = "DELETE_TASK";
 // Types for Backlog
 
 export const GET_BACKLOG = "GET_BACKLOG";
-export const GET_PRODUCT_TASKS = "GET_PRODUCT_TASK";
+export const GET_PRODUCT_TASK = "GET_PRODUCT_TASK";
 export const DELETE_PRODUCT_TASK = "DELETE_PRODUCT_TASK";

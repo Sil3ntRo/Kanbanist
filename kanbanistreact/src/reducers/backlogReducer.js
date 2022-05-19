@@ -1,4 +1,4 @@
-import {GET_BACKLOG, GET_PRODUCT_TASK, DELETE_PRODUCT_TASK} from "..actions/taskActions";
+import {GET_BACKLOG, GET_PRODUCT_TASK, DELETE_PRODUCT_TASK} from "../actions/types";
 
 
 const initialState = {
