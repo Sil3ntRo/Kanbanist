@@ -24,6 +24,7 @@ class App extends Component {
               <Route exact path="/updateTask/:id" element={<UpdateTask />}/>
               <Route exact path="/taskBoard/:id" element={<ProductBoard />}/>
               <Route exact path="/addProductTask/:id" element={<AddProductTask />} />
+              <Route exact path="/updateProductTask/:id" element={<ProductBoard />} />
             </Routes>
           </div>
         </Router>
