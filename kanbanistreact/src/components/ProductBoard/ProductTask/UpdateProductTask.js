@@ -18,7 +18,7 @@ class UpdateProductTask extends Component {
           status: "",
           priority: "",
           dueDate: "",
-          productIdentifier: "",
+          taskIdentifier: "",
           create_At: ""
         };
         this.onChange = this.onChange.bind(this);
@@ -40,7 +40,7 @@ class UpdateProductTask extends Component {
           status,
           priority,
           dueDate,
-          productIdentifier,
+          taskIdentifier,
           create_At
         } = nextProps.product_task;
     
@@ -52,7 +52,7 @@ class UpdateProductTask extends Component {
           status,
           priority,
           dueDate,
-          productIdentifier,
+          taskIdentifier,
           create_At
         });
       }
@@ -72,12 +72,12 @@ class UpdateProductTask extends Component {
           status: this.state.status,
           priority: this.state.priority,
           dueDate: this.state.dueDate,
-          productIdentifier: this.state.productIdentifier,
+          taskIdentifier: this.state.taskIdentifier,
           create_At: this.state.create_At
         };
     
         this.props.updateProductTask(
-            this.state.productIdentifier, 
+            this.state.taskIdentifier, 
             this.state.productSequence, 
             UpdateProductTask,
             this.props.history
@@ -92,14 +92,14 @@ class UpdateProductTask extends Component {
           <div className="row">
             <div className="col-md-8 m-auto">
             <Link
-                to={`/productBoard/${this.state.productIdentifier}`}
+                to={`/productBoard/${this.state.taskIdentifier}`}
                 className="btn btn-light"
               >
                 Back to Product Board
               </Link>
               <h4 className="display-4 text-center">Update Product Task</h4>
               <p className="lead text-center">
-                Product Name: {this.state.productIdentifier} | Product Task ID:{" "}
+                Product Name: {this.state.taskIdentifier} | Product Task ID:{" "}
                 {this.state.productSequence}{" "}
               </p>
               <form onSubmit={this.onSubmit}>

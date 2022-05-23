@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_ERRORS, GET_BACKLOG, GET_PRODUCT_TASK } from "./types";
+import { GET_ERRORS, GET_BACKLOG, GET_PRODUCT_TASK, DELETE_PRODUCT_TASK } from "./types";
 
 
 export const addProductTask = (backlog_id, product_task, history) => async dispatch => {
@@ -63,6 +63,20 @@ export const updateProductTask = (
       dispatch({
         type: GET_ERRORS,
         payload: err.response.data
+      });
+    }
+  };
+
+  export const deleteProductTask = (backlog_id, pt_id) => async dispatch => {
+    if (
+      window.confirm(
+        `You are deleting product task ${pt_id}, this action cannot be undone`
+      )
+    ) {
+      await axios.delete(`/api/backlog/${backlog_id}/${pt_id}`);
+      dispatch({
+        type: DELETE_PRODUCT_TASK,
+        payload: pt_id
       });
     }
   };

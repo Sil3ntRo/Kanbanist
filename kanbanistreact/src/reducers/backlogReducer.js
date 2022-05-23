@@ -23,7 +23,9 @@ export default function(state = initialState, action) {
         case DELETE_PRODUCT_TASK:
         return{
             ...state,
-            
+            product_tasks: state.product_tasks.filter(
+                product_task => product_task.productSequence !== action.payload
+              )
         };
 
         default:
