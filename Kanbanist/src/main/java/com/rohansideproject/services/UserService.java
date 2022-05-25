@@ -5,6 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.rohansideproject.domain.User;
+import com.rohansideproject.exceptions.UsernameAlreadyExistsException;
 import com.rohansideproject.repositories.UserRepository;
 
 @Service
@@ -14,15 +15,22 @@ public class UserService {
 	  private UserRepository userRepository;
 	  
 	  @Autowired
-	    private BCryptPasswordEncoder bCryptPasswordEncoder;
+	  private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-	    public User saveUser (User newUser){
-	      newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
+	  public User saveUser (User newUser){
+		  
+		  try{
+	            newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
+	            //Username has to be unique (exception)
+	            newUser.setUsername(newUser.getUsername());
+	            // Make sure that password and confirmPassword match
+	            // We don't persist or show the confirmPassword
+	            newUser.setConfirmPassword("");
+	            return userRepository.save(newUser);
 
-	      // Username has to be unique (exception)
+	      }catch (Exception e){
+	          throw new UsernameAlreadyExistsException("Username '"+newUser.getUsername()+"' already exists");
+	      }
+	  }
 
-	      // Make sure that password and confirmPassword match
-	      // We don't persist or show the confirmPassword
-	      return userRepository.save(newUser);
-	    }
 }
