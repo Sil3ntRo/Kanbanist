@@ -35,6 +35,12 @@ public class Task {
 	@JsonIgnore
 	private Backlog backlog;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+	private User user;
+	
+	private String taskLeader;
+	
 	public Task() {
 		
 	}
@@ -109,6 +115,22 @@ public class Task {
 
 	public void setBacklog(Backlog backlog) {
 		this.backlog = backlog;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public String getTaskLeader() {
+		return taskLeader;
+	}
+
+	public void setTaskLeader(String taskLeader) {
+		this.taskLeader = taskLeader;
 	}
 
 	@PrePersist

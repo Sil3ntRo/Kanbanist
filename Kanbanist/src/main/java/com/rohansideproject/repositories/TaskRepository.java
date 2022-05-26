@@ -12,4 +12,6 @@ public interface TaskRepository extends CrudRepository<Task, Long> {
 	
 	@Override
 	Iterable<Task> findAll();
+	
+	Iterable<Task> findByAllTaskLeader(String username);
 }

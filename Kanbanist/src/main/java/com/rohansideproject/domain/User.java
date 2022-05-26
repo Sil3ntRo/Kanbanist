@@ -9,8 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 public class User implements UserDetails {
 	
@@ -30,6 +32,10 @@ public class User implements UserDetails {
     private String confirmPassword;
     private Date create_At;
     private Date update_At;
+    
+   //OneToMany with Project
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
+    private List<Task> tasks = new ArrayList<>();
     
     public User() {
     }
@@ -89,8 +95,17 @@ public class User implements UserDetails {
     public void setUpdate_At(Date update_At) {
         this.update_At = update_At;
     }
+    
 
-    @PrePersist
+    public List<Task> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(List<Task> tasks) {
+		this.tasks = tasks;
+	}
+
+	@PrePersist
     protected void onCreate(){
         this.create_At = new Date();
     }

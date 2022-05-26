@@ -1,5 +1,6 @@
 package com.rohansideproject.web;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,32 +35,32 @@ public class TaskController {
 	private MapValidationErrorService mapValidationErrorService;
 	
 	@PostMapping("")
-	public ResponseEntity<?> createNewTask(@Valid @RequestBody Task task, BindingResult result) {
+	public ResponseEntity<?> createNewTask(@Valid @RequestBody Task task, BindingResult result, Principal principal) {
 		
 		ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
 		if(errorMap != null) return errorMap;
 		
-		Task task1 = taskService.saveOrUpdateTask(task);
+		Task task1 = taskService.saveOrUpdateTask(task, principal.getName());
 		return new ResponseEntity<Task>(task1, HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/{taskId}")
-	public ResponseEntity<?> getTaskById(@PathVariable String taskId) {
+	public ResponseEntity<?> getTaskById(@PathVariable String taskId, Principal principal) {
 		
-		Task task = taskService.findTaskByIdentifier(taskId);
+		Task task = taskService.findTaskByIdentifier(taskId, principal.getName());
 		
 		return new ResponseEntity<Task>(task, HttpStatus.OK);
 	}
 	
 	@GetMapping("/all")
-	public Iterable<Task> getAllTasks() {
+	public Iterable<Task> getAllTasks(Principal principal) {
 		
-		return taskService.findAllTasks();
+		return taskService.findAllTasks(principal.getName());
 	}
 	
 	@DeleteMapping("/{taskId}")
-	public ResponseEntity<?> deleteProject(@PathVariable String taskId) {
-		taskService.deleteTaskByIdentifier(taskId);
+	public ResponseEntity<?> deleteProject(@PathVariable String taskId, Principal principal) {
+		taskService.deleteTaskByIdentifier(taskId, principal.getName());
 		
 		return new ResponseEntity<String>("Task with ID: '" + taskId + "' was deleted", HttpStatus.OK); 
 	}

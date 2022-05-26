@@ -5,9 +5,12 @@ import org.springframework.stereotype.Service;
 
 import com.rohansideproject.domain.Backlog;
 import com.rohansideproject.domain.Task;
+import com.rohansideproject.domain.User;
 import com.rohansideproject.exceptions.TaskIdException;
+import com.rohansideproject.exceptions.TaskNotFoundException;
 import com.rohansideproject.repositories.BacklogRepository;
 import com.rohansideproject.repositories.TaskRepository;
+import com.rohansideproject.repositories.UserRepository;
 
 @Service
 public class TaskService {
@@ -18,9 +21,15 @@ public class TaskService {
 		@Autowired
 		private BacklogRepository backlogRepository;
 		
-		public Task saveOrUpdateTask(Task task) {
+		@Autowired
+		private UserRepository userRepository;
+		
+		public Task saveOrUpdateTask(Task task, String username) {
 			
 			try {
+				User user = userRepository.findByUsername(username);
+				task.setUser(user);
+				task.setTaskLeader(user.getUsername());
 				task.setTaskIdentifier(task.getTaskIdentifier().toUpperCase());
 				
 				if(task.getId() == null) {
@@ -41,7 +50,7 @@ public class TaskService {
 			
 		}
 		
-		public Task findTaskByIdentifier(String taskId) {
+		public Task findTaskByIdentifier(String taskId, String username) {
 			
 			Task task = taskRepository.findByTaskIdentifier(taskId.toUpperCase());
 			
@@ -50,20 +59,19 @@ public class TaskService {
 
 			}
 			
+			if(!task.getTaskLeader().equals(username)) {
+	            throw new TaskNotFoundException("Task not found in your account");
+
+			}
+			
 			return task;
 		}
 		
-		public Iterable<Task> findAllTasks() {
-			return taskRepository.findAll();
+		public Iterable<Task> findAllTasks(String username) {
+			return taskRepository.findByAllTaskLeader(username);
 		}
 		
-		public void deleteTaskByIdentifier(String taskId) {
-			Task task = taskRepository.findByTaskIdentifier(taskId);
-			
-			if(task == null) {
-				throw new TaskIdException("Cannot delete Task with ID '" + taskId + "'. This task does not exist");
-			}
-			
-			taskRepository.delete(task);
+		public void deleteTaskByIdentifier(String taskId, String username) {
+			taskRepository.delete(findTaskByIdentifier(taskId, username));
 		}
 }
