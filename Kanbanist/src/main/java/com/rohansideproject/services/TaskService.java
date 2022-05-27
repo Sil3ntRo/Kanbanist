@@ -26,6 +26,16 @@ public class TaskService {
 		
 		public Task saveOrUpdateTask(Task task, String username) {
 			
+			if(task.getId() != null) {
+				Task existingTask = taskRepository.findByTaskIdentifier(task.getTaskIdentifier());
+				
+				if(existingTask != null & (!existingTask.getTaskLeader().equals(username))) {
+					throw new TaskNotFoundException("Task not found in your account");
+				} else if (existingTask == null) {
+					throw new TaskNotFoundException("Task with ID: '" + task.getTaskIdentifier() + "' cannot be updated because it doesn't exist");
+				}
+			}
+			
 			try {
 				User user = userRepository.findByUsername(username);
 				task.setUser(user);

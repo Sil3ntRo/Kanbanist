@@ -25,67 +25,59 @@ public class ProductBacklogTaskService {
 	@Autowired
 	private TaskRepository taskRepository;
 	
-	public ProductBacklogTask addProductTask(String productIdentifier, ProductBacklogTask productTask) {
+	@Autowired
+	private TaskService taskService;
+	
+	public ProductBacklogTask addProductTask(String productIdentifier, ProductBacklogTask productTask, String username) {
 		
-		try {
-			// PT to be added to specified task, task != null, exists in backlog
-			Backlog backlog = backlogRepository.findByTaskIdentifier(productIdentifier);
-			
-			productTask.setBacklog(backlog);
-			
-			// Set the backlog to PT to be similar: IDPT-1 IDPT-2...100 101
-			Integer BacklogSequence = backlog.getPTSequence();
-			
-			// Update backlog seq
-			BacklogSequence++;
-			
-			backlog.setPTSequence(BacklogSequence);
-			
-			// Add seq to product task
-			productTask.setProductSequence(backlog.getTaskIdentifier() + "-" + BacklogSequence);
-			productTask.setTaskIdentifier(productIdentifier);
-			
-			// Initial priority will be null
-			if(productTask.getPriority() == null) {
-				productTask.setPriority(3);
-			}
-			
-			// Initial status when status 
-			if(productTask.getStatus() == "" || productTask.getStatus() == null) {
-				productTask.setStatus("TO_DO");
-			}
-			
-			return productBacklogTaskRepository.save(productTask);
-		} catch (Exception e) {
-			throw new TaskNotFoundException("Task not Found");
+		
+		// PT to be added to specified task, task != null, exists in backlog
+		Backlog backlog = taskService.findTaskByIdentifier(productIdentifier, username).getBacklog();
+		
+		System.out.println(backlog);
+		
+		productTask.setBacklog(backlog);
+		
+		// Set the backlog to PT to be similar: IDPT-1 IDPT-2...100 101
+		Integer BacklogSequence = backlog.getPTSequence();
+		
+		// Update backlog seq
+		BacklogSequence++;
+		
+		backlog.setPTSequence(BacklogSequence);
+		
+		// Add seq to product task
+		productTask.setProductSequence(backlog.getTaskIdentifier() + "-" + BacklogSequence);
+		productTask.setTaskIdentifier(productIdentifier);
+		
+		// Initial priority will be null
+		if(productTask.getPriority() == null) {
+			productTask.setPriority(3);
 		}
+		
+		// Initial status when status 
+		if(productTask.getStatus() == "" || productTask.getStatus() == null) {
+			productTask.setStatus("TO_DO");
+		}
+		
+		return productBacklogTaskRepository.save(productTask);
 		
 		
 	}
 
-	public Iterable<ProductBacklogTask> findBacklogById(String id) {
+	public Iterable<ProductBacklogTask> findBacklogById(String id, String username) {
 		
-		Task task = taskRepository.findByTaskIdentifier(id);
-		
-		if(task == null) {
-			throw new TaskNotFoundException("Task with ID: '" + id + "' does not exist");
-		}
+		taskService.findTaskByIdentifier(id, username);
 		
 		return productBacklogTaskRepository.findByTaskIdentifierOrderByPriority(id);
 	}
 	
-	public ProductBacklogTask findPTByProductSequence(String backlog_id, String pt_id) {
+	public ProductBacklogTask findPTByProductSequence(String backlog_id, String pt_id, String username) {
 		
-		// Make sure task that is being searched is on existing backlog
-		Backlog backlog = backlogRepository.findByTaskIdentifier(pt_id);
-		
-		if(backlog == null) {
-			throw new TaskNotFoundException("Task with ID: '" + backlog_id + "' does not exist");
-		}
-		
+		taskService.findTaskByIdentifier(backlog_id, username);
 		
 		// Make sure task already exists in the backlog
-		ProductBacklogTask productBacklogTask = productBacklogTaskRepository.findByTaskSequence(pt_id);
+				ProductBacklogTask productBacklogTask = productBacklogTaskRepository.findByTaskSequence(pt_id);
 		
 		if(productBacklogTask == null) {
 			throw new TaskNotFoundException("Product Task '" + pt_id + "' not found");
@@ -100,21 +92,16 @@ public class ProductBacklogTaskService {
 		return productBacklogTask;
 	}
 	
-	public ProductBacklogTask updateByProductSequence(ProductBacklogTask updatedTask, String backlog_id, String pt_id) {
-		ProductBacklogTask productBacklogTask = findPTByProductSequence(backlog_id, pt_id);
+	public ProductBacklogTask updateByProductSequence(ProductBacklogTask updatedTask, String backlog_id, String pt_id, String username) {
+		ProductBacklogTask productBacklogTask = findPTByProductSequence(backlog_id, pt_id, username);
 		
 		productBacklogTask = updatedTask;
 		
 		return productBacklogTaskRepository.save(productBacklogTask);
 	}
 	
-	public void deletePTByProductSequence(String backlog_id, String pt_id) {
-		ProductBacklogTask productBacklogTask = findPTByProductSequence(backlog_id, pt_id);
-		
-		Backlog backlog = productBacklogTask.getBacklog();
-		List<ProductBacklogTask> pts = backlog.getProductBacklogTasks();
-		pts.remove(productBacklogTask);
-		backlogRepository.save(backlog);
+	public void deletePTByProductSequence(String backlog_id, String pt_id, String username) {
+		ProductBacklogTask productBacklogTask = findPTByProductSequence(backlog_id, pt_id, username);
 		
 		productBacklogTaskRepository.delete(productBacklogTask);
 	}

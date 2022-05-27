@@ -1,5 +1,6 @@
 package com.rohansideproject.web;
 
+import java.security.Principal;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -27,42 +28,42 @@ public class BacklogController {
 	
 	@PostMapping("/{backlog_id}")
 	public ResponseEntity<?> addPTtoBacklog(@Valid @RequestBody ProductBacklogTask productBacklogTask,
-											BindingResult result, @PathVariable String backlog_id)  {
+											BindingResult result, @PathVariable String backlog_id, Principal principal)  {
 		
 		ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
 		
 		if(errorMap != null) return errorMap;
 		
-		ProductBacklogTask productBacklogTask1 = productBacklogTaskService.addProductTask(backlog_id, productBacklogTask);
+		ProductBacklogTask productBacklogTask1 = productBacklogTaskService.addProductTask(backlog_id, productBacklogTask, principal.getName());
 		
 		return new ResponseEntity<ProductBacklogTask>(productBacklogTask1, HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/{backlog_id")
-	public Iterable<ProductBacklogTask> getTaskBacklog(@PathVariable String backlog_id) {
-		return productBacklogTaskService.findBacklogById(backlog_id);
+	public Iterable<ProductBacklogTask> getTaskBacklog(@PathVariable String backlog_id, Principal principal) {
+		return productBacklogTaskService.findBacklogById(backlog_id, principal.getName());
 	}
 	
 	@GetMapping("/{backlog_id}/{pt_id}")
-	public ResponseEntity<?> getProductBacklogTask(@PathVariable String backlog_id, @PathVariable String pt_id) {
-		ProductBacklogTask productBacklogTask = productBacklogTaskService.findPTByProductSequence(backlog_id, pt_id);
+	public ResponseEntity<?> getProductBacklogTask(@PathVariable String backlog_id, @PathVariable String pt_id, Principal principal) {
+		ProductBacklogTask productBacklogTask = productBacklogTaskService.findPTByProductSequence(backlog_id, pt_id, principal.getName());
 		return new ResponseEntity<ProductBacklogTask>(productBacklogTask, HttpStatus.OK);
 	}
 	
 	@PatchMapping("/{backlog_id}/{pt_id}")
 	public ResponseEntity<?> updateProductTask(@Valid @RequestBody ProductBacklogTask productBacklogTask, BindingResult result,
-												@PathVariable String backlog_id, @PathVariable String pt_id) {
+												@PathVariable String backlog_id, @PathVariable String pt_id, Principal principal) {
 		ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
 		if(errorMap != null) return errorMap;
 		
-		ProductBacklogTask updatedTask = productBacklogTaskService.updateByProductSequence(productBacklogTask, backlog_id, pt_id);
+		ProductBacklogTask updatedTask = productBacklogTaskService.updateByProductSequence(productBacklogTask, backlog_id, pt_id, principal.getName());
 		
 		return new ResponseEntity<ProductBacklogTask>(updatedTask, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{backlog_id}/{pt_id}")
-	public ResponseEntity<?> deleteProductTask(@PathVariable String backlog_id, @PathVariable String pt_id) {
-		productBacklogTaskService.deletePTByProductSequence(backlog_id, pt_id);
+	public ResponseEntity<?> deleteProductTask(@PathVariable String backlog_id, @PathVariable String pt_id, Principal principal) {
+		productBacklogTaskService.deletePTByProductSequence(backlog_id, pt_id, principal.getName());
 		
 		return new ResponseEntity<String>("Product Task " + pt_id + " was successfully deleted", HttpStatus.OK);
 	}
