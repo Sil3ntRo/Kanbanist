@@ -10,6 +10,9 @@ import store from "./store";
 import UpdateTask from "./components/Task/UpdateTask";
 import ProductBoard from "./components/ProductBoard/ProductBoard"
 import AddProductTask from "./components/ProductBoard/ProductTask/AddProductTask";
+import Landing from "./components/Layout/Landing";
+import Register from "./components/UserManagement/Register";
+import Login from "./components/UserManagement/Login";
 
 class App extends Component {
   render() {
@@ -25,6 +28,9 @@ class App extends Component {
               <Route exact path="/taskBoard/:id" element={<ProductBoard />}/>
               <Route exact path="/addProductTask/:id" element={<AddProductTask />} />
               <Route exact path="/updateProductTask/:id" element={<ProductBoard />} />
+              <Route exact path="/" element={<Landing />}/>
+              <Route exact path="/register" element={<Register />} />
+              <Route exact path="/login" element={<Login />} />
             </Routes>
           </div>
         </Router>
