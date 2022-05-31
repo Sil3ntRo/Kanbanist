@@ -17,6 +17,7 @@ import jwt_decode from "jwt-decode";
 import setJWTToken from "./securityUtils/setJWTToken";
 import { SET_CURRENT_USER } from "./actions/types";
 import { logout } from "./actions/securityActions";
+import SecureRoute from "./securityUtils/SecureRoute";
 
 
 const jwtToken = localStorage.jwtToken;
@@ -46,16 +47,18 @@ class App extends Component {
           <div className="App">
           <Header />
             <Routes>
+              <Route exact path="/" element={<Landing />}/>
+              <Route exact path="/register" element={<Register />} />
+              <Route exact path="/login" element={<Login />} />
+            </Routes>
+            <SecureRoute>
               <Route exact path="/dashboard" element={<Dashboard />}/>
               <Route exact path="/addTask" element={<AddTask />}/>
               <Route exact path="/updateTask/:id" element={<UpdateTask />}/>
               <Route exact path="/taskBoard/:id" element={<ProductBoard />}/>
               <Route exact path="/addProductTask/:id" element={<AddProductTask />} />
               <Route exact path="/updateProductTask/:id" element={<ProductBoard />} />
-              <Route exact path="/" element={<Landing />}/>
-              <Route exact path="/register" element={<Register />} />
-              <Route exact path="/login" element={<Login />} />
-            </Routes>
+            </SecureRoute>
           </div>
         </Router>
       </Provider>
